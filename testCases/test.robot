@@ -1,0 +1,73 @@
+*** Settings ***
+Documentation     Example using the space separated format.
+Library           OperatingSystem
+Library    SeleniumLibrary
+Variables  ../resources/variables.py
+Library    ../resources/CustomKeywords.py
+
+
+*** Variables ***
+${MESSAGE}        Hello, world!
+${URL}         https://www.demoblaze.com/index.html
+${BROWSER}     chrome
+
+*** Test Cases ***
+Login And Logout
+    [Documentation]   Login
+    Open Site    ${URL}
+    Login To Demoblaze    ${USERNAME}    ${PASSWORD}
+    Verify Login Successful    ${USERNAME}
+    Sleep    2s
+    #Click Element    id:login2
+    Sleep    3s
+    Log Out From Demoblaze
+    Sleep   0.5s
+    CustomKeywords.Close Browser
+
+Login Buy And Logout
+    Open Site    ${URL}
+    Login To Demoblaze    ${USERNAME}    ${PASSWORD}
+    Verify Login Successful    ${USERNAME}
+    Sleep    2s
+    Add To Cart    ${PRODUCT_ONE}
+    Sleep    2s
+    Add To Cart
+    Sleep    2s
+    Add To Cart    ${PRODUCT_THREE}
+    Sleep    2s
+    Buy Product From Demoblaze
+    Sleep    3s
+    Log Out From Demoblaze
+    Sleep   0.5s
+    CustomKeywords.Close Browser
+
+Sign Up New User And Login And Logout
+    Open Site    ${URL}
+    ${USERNAME}    ${PASSWORD}=    Sign Up To Demoblaze    user
+    Log    Зарегистрирован новый пользователь: ${USERNAME}
+    Sleep    3s
+    Login To Demoblaze    ${USERNAME}    ${PASSWORD}
+    Verify Login Successful    ${USERNAME}
+    Sleep    2s
+    Log Out From Demoblaze
+    Sleep   0.5s
+    CustomKeywords.Close Browser
+
+
+Sign Up New User And Login And Buy And Logout
+    Open Site    ${URL}
+    ${USERNAME}    ${PASSWORD}=    Sign Up To Demoblaze    user
+    Log    Зарегистрирован новый пользователь: ${USERNAME}
+    Sleep    3s
+    Login To Demoblaze    ${USERNAME}    ${PASSWORD}
+    Verify Login Successful    ${USERNAME}
+    Sleep    2s
+    Add To Cart
+    Sleep    2s
+    Buy Product From Demoblaze
+    Sleep    3s
+    Log Out From Demoblaze
+    Sleep   0.5s
+    CustomKeywords.Close Browser
+
+
