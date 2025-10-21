@@ -4,8 +4,17 @@ import time
 import hashlib
 
 from variables import (
-    URL, NAME, COUNTRY, CITY,
-    CREDIT_CARD, MONTH, YEAR
+    baseUrl, browser,
+    orderName, orderCountry, orderCity,
+    orderCard, orderMonth, orderYear,
+    usernamePrefix, usernamePassword
+)
+
+from locators import (
+    signUpButton, signUpUsername, signUpPassword, signUpFormButton, categoriesCheck,
+    loginButton, loginUsernameField, loginPasswordField, loginFormButton, logoutButton,
+    cartButton, homeButton, addToCartButton, placeOrderButton, orderNameField, orderCountryField,
+    orderCityField, orderCardField, orderMonthField, orderYearField, purchaseFormButton, purchaseOkButton
 )
 
 class CustomKeywords:
@@ -13,22 +22,26 @@ class CustomKeywords:
     def __init__(self):
         self.selib = SeleniumLibrary()
 
-    def open_site(self, url):
-        print(f"=== Открываю сайт: {url} ===")
-        self.selib.open_browser(url, "chrome")
+
+    def open_site(self):
+        print(f"=== Открываю сайт: {baseUrl} ===")
+        self.selib.open_browser(baseUrl, browser)
+        self.selib.wait_until_page_contains(homeButton, timeout=10)
         self.selib.maximize_browser_window()
         print("=== Браузер открыт ===")
+        time.sleep(1)
 
-    def sign_up_to_demoblaze(self, username_prefix="user", password="test123"):
+
+    def sign_up_to_site(self):
         unique_id = str(time.time()).encode('utf-8')
         username_hash = hashlib.sha1(unique_id).hexdigest()[:8]
 
-        unique_username = f"{username_prefix}_{username_hash}"
-        self.selib.click_element("id=signin2")
+        unique_username = f"{usernamePrefix}_{username_hash}"
+        self.selib.click_element(signUpButton)
         time.sleep(1)
-        self.selib.input_text("id=sign-username", unique_username)
-        self.selib.input_text("id=sign-password", password)
-        self.selib.click_button("xpath=//button[text()='Sign up']")
+        self.selib.input_text(signUpUsername, unique_username)
+        self.selib.input_text(signUpPassword, usernamePassword)
+        self.selib.click_button(signUpFormButton)
         time.sleep(1)
 
         try:
@@ -38,54 +51,55 @@ class CustomKeywords:
         except NoAlertPresentException:
             print("Пользователь успешно зарегистрирован (alert не появился)")
 
-        return unique_username, password
+        return unique_username, usernamePassword
 
-    def login_to_demoblaze(self, username, password):
-        self.selib.click_element("id=login2")
+
+    def login_to_site(self, username, password):
+        self.selib.click_element(loginButton)
         time.sleep(1)
-        self.selib.input_text("id=loginusername", username)
-        self.selib.input_text("id=loginpassword", password)
-        self.selib.click_button("xpath=//button[text()='Log in']")
+        self.selib.input_text(loginUsernameField, username)
+        self.selib.input_text(loginPasswordField, password)
+        self.selib.click_button(loginFormButton)
         self.selib.wait_until_page_contains("Welcome", timeout=10)
 
-    def verify_login_successful(self, username):
-        self.selib.page_should_contain(f"Welcome {username}")
-        print(f"Alert: {username}")
 
-    def logout_from_demoblaze(self):
+    def logout_from_site(self):
         time.sleep(1)
-        self.selib.click_element("id=logout2")
-        self.selib.wait_until_page_contains("Log in", timeout=10)
+        self.selib.click_element(logoutButton)
+        self.selib.wait_until_page_contains_element(loginButton, timeout=10)
         print("Пользователь успешно вышел из аккаунта")
 
-    def buy_product_from_demoblaze(self):
-        self.selib.click_link("Cart")
+
+    def buy_product_from_site(self):
+        self.selib.click_link(cartButton)
         time.sleep(2)
 
-        self.selib.click_button("xpath=//button[text()='Place Order']")
+        self.selib.click_button(placeOrderButton)
         time.sleep(1)
 
-        self.selib.input_text("id=name", NAME)
-        self.selib.input_text("id=country", COUNTRY)
-        self.selib.input_text("id=city", CITY)
-        self.selib.input_text("id=card", CREDIT_CARD)
-        self.selib.input_text("id=month", MONTH)
-        self.selib.input_text("id=year", YEAR)
+        self.selib.input_text(orderNameField, orderName)
+        self.selib.input_text(orderCountryField, orderCountry)
+        self.selib.input_text(orderCityField, orderCity)
+        self.selib.input_text(orderCardField, orderCard)
+        self.selib.input_text(orderMonthField, orderMonth)
+        self.selib.input_text(orderYearField, orderYear)
 
-        self.selib.click_button("xpath=//button[text()='Purchase']")
+        self.selib.click_button(purchaseFormButton)
         time.sleep(2)
 
         self.selib.page_should_contain("Thank you for your purchase!")
-        self.selib.click_button("xpath=//button[text()='OK']")
+        self.selib.click_button(purchaseOkButton)
 
         print("Покупка успешно завершена!")
 
+
     def add_to_cart(self, product_name="Iphone 6 32gb"):
         self.selib.click_link(product_name)
+        self.selib.wait_until_page_contains_element(addToCartButton, timeout=10)
+
+        self.selib.click_element(addToCartButton)
         time.sleep(2)
 
-        self.selib.click_element("xpath=//a[contains(text(), 'Add to cart')]")
-        time.sleep(2)
         try:
             alert = self.selib.driver.switch_to.alert
             print(f"🛒 Alert: {alert.text}")
@@ -93,10 +107,10 @@ class CustomKeywords:
         except NoAlertPresentException:
             print("Нет alert'а при добавлении товара")
 
-        time.sleep(2)
-        self.selib.click_link("Home")
-
-
+        time.sleep(1)
+        self.selib.click_link(homeButton)
+        self.selib.wait_until_page_contains_element(categoriesCheck, timeout=10)
+        time.sleep(1)
 
 
     def close_browser(self):
