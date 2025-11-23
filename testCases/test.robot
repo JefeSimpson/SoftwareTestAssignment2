@@ -1,19 +1,17 @@
 *** Settings ***
-Library           OperatingSystem
+Library    OperatingSystem
 Library    SeleniumLibrary
 Variables  ../resources/variables.py
 Library    ../resources/CustomKeywords.py
-
-
 *** Test Cases ***
 Login And Logout
-    Open Site
+    Open Site   Chrome
     Login To Site    ${login}   ${password}
     Logout From Site
     CustomKeywords.Close Browser
 
 Login Buy And Logout
-    Open Site
+    Open Site   Chrome
     Login To Site    ${login}    ${password}
     Add To Cart    ${productOne}
     Add To Cart    ${productTwo}
@@ -23,7 +21,7 @@ Login Buy And Logout
     CustomKeywords.Close Browser
 
 Sign Up New User And Login And Logout
-    Open Site
+    Open Site   Chrome
     ${login}    ${password}=    Sign Up To Site
     Login To Site    ${login}    ${password}
     Logout From Site
@@ -31,12 +29,10 @@ Sign Up New User And Login And Logout
 
 
 Sign Up New User And Login And Buy And Logout
-    Open Site
+    Open Site   Chrome
     ${login}    ${password}=    Sign Up To Site
     Login To Site    ${login}    ${password}
     Add To Cart
     Buy Product From Site
     Logout From Site
     CustomKeywords.Close Browser
-
-

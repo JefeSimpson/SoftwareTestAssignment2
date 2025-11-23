@@ -4,7 +4,7 @@ import time
 import hashlib
 
 from variables import (
-    baseUrl, browser,
+    baseUrl,
     orderName, orderCountry, orderCity,
     orderCard, orderMonth, orderYear,
     usernamePrefix, usernamePassword
@@ -23,10 +23,10 @@ class CustomKeywords:
         self.selib = SeleniumLibrary()
 
 
-    def open_site(self):
+    def open_site(self, browser):
         print(f"=== Открываю сайт: {baseUrl} ===")
         self.selib.open_browser(baseUrl, browser)
-        self.selib.wait_until_page_contains(homeButton, timeout=10)
+        self.selib.wait_until_page_contains(homeButton, timeout=30)
         self.selib.maximize_browser_window()
         print("=== Браузер открыт ===")
         time.sleep(1)
@@ -60,13 +60,13 @@ class CustomKeywords:
         self.selib.input_text(loginUsernameField, username)
         self.selib.input_text(loginPasswordField, password)
         self.selib.click_button(loginFormButton)
-        self.selib.wait_until_page_contains("Welcome", timeout=10)
+        self.selib.wait_until_page_contains("Welcome", timeout=30)
 
 
     def logout_from_site(self):
         time.sleep(1)
         self.selib.click_element(logoutButton)
-        self.selib.wait_until_page_contains_element(loginButton, timeout=10)
+        self.selib.wait_until_page_contains_element(loginButton, timeout=30)
         print("Пользователь успешно вышел из аккаунта")
 
 
@@ -95,7 +95,7 @@ class CustomKeywords:
 
     def add_to_cart(self, product_name="Iphone 6 32gb"):
         self.selib.click_link(product_name)
-        self.selib.wait_until_page_contains_element(addToCartButton, timeout=10)
+        self.selib.wait_until_page_contains_element(addToCartButton, timeout=30)
 
         self.selib.click_element(addToCartButton)
         time.sleep(2)
@@ -109,7 +109,7 @@ class CustomKeywords:
 
         time.sleep(1)
         self.selib.click_link(homeButton)
-        self.selib.wait_until_page_contains_element(categoriesCheck, timeout=10)
+        self.selib.wait_until_page_contains_element(categoriesCheck, timeout=30)
         time.sleep(1)
 
 

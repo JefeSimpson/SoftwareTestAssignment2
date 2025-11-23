@@ -1,5 +1,7 @@
 baseUrl = "https://www.demoblaze.com"
-browser = "chrome"
+browserChrome = "chrome"
+browserFirefox = "firefox"
+browserSafari = "safari"
 
 login = "nuradil_test_account"
 password = "test123"
